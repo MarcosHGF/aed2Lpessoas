@@ -10,15 +10,22 @@ typedef struct arvore{
 void insere(Arvore *t, int n);
 void percorreOrdem(Arvore *t);
 int tamanho(Arvore *t);
-int contafolha(Arvore *t)
+int contafolha(Arvore *t);
 
 int main(){
+    int tam, folhas;
+    Arvore *tree;
 
+    insere(tree, 9);
+    insere(tree, 2);
+    insere(tree, 18);
+    
 
-
-
-
-
+    percorreOrdem(tree);
+    tam = tamanho(tree);
+    printf("%d\n", tam);
+    folhas = contafolha(tree);
+    printf("%d\n", folhas);
 
     return 0;
 }
@@ -74,9 +81,9 @@ int contafolha(Arvore *t){
         return 1;
     }
 
-    int leftLeaves = countLeaves(t->esq);
-    int rightLeaves = countLeaves(t->dir);
+    int folhaesq = contafolha(t->esq);
+    int folhadir = contafolha(t->dir);
 
-    return leftLeaves + rightLeaves;
+    return folhaesq + folhadir;
 
 }

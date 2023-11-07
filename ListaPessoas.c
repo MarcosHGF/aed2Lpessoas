@@ -1,148 +1,133 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct nodePessoa {
-    int idade;
+//1
+typedef struct pessoa{
     char nome[15];
-    struct nodePessoa *ant;
-    struct nodePessoa *prox;
-} nodep;
+    int idade;
+}Pessoa;
 
-typedef struct no{
-    struct nodep *inicio;
-    struct nodep *fim;
-    int tamanholista;
-    int i;
-} listaDuplamente;
+typedef struct node{
+    int dado;
+    struct node *prox;
+    struct node *ant;
+}Node;
 
-void crialista(listaDuplamente *l);
-nodep *aloca(int i, char *n);
-void insereInicio(listaDuplamente *l, int i, char *n);
-void imprimeLista(listaDuplamente *l);
-int busca(listaDuplamente *l, int v);
-void removevalor(listaDuplamente *l, int v);
-void inverte(listaDuplamente *l);
+typedef struct nodep{
+    Pessoa *pess;
+    struct nodep *prox;
+    struct nodep *ant;
+}NodeP;
 
-int main() {
-    listaDuplamente lista;
-    crialista(&lista);
-    int i,d;
-    char n[15];
+//funções
+void insereInicio(NodeP **l, int idade, char nome[15]);
+NodeP* busca(NodeP *l, int idade);
+void removevalor(NodeP **l, int v);
+void invertelista(NodeP *l, NodeP **new);
+void mostralista(NodeP *l);
 
-    for (i = 0; i < 5; i++) {
-        printf("idade: ");
-        scanf("%d", &d);
-        printf("nome: ");
-        gets(n);
+int main(){
+    NodeP *l = NULL;
+    NodeP *new = NULL;
 
-        insereInicio(&lista, d, n);
-    }
+    insereInicio(&l, 5, "A");
+    insereInicio(&l, 12, "B");
+    insereInicio(&l, 3, "C");
+    insereInicio(&l, 9, "D");
+    insereInicio(&l, 4, "E");
+    mostralista(l);
+    printf("\n");
 
-    imprimeLista(&lista);
-    inverte(&lista);
-    //busca(&lista, 7);
-    //removevalor(&lista, 5);
-    printf("invertida\n");
-    imprimeLista(&lista);
+    busca(l, 12);
 
-return 0;
-}
+    removevalor(&l, 12);
 
-void crialista(listaDuplamente *l) {
-    l->inicio = NULL;
-    l->fim = NULL;
-    l->tamanholista = 0;
-}
+    mostralista(l);
 
-nodep *aloca(int i, char *n) {
-    nodep *pess = (nodep *)malloc(sizeof(nodep));
+    invertelista(l, &new);
+    printf("\n");
+    mostralista(l);
+    printf("\n");
+    mostralista(new);
 
-    if (pess == NULL) {
-        return NULL;
-    }
-
-    strcpy(pess->nome, n);
-    pess->idade = i;
-    pess->prox = NULL;
-    pess->ant = NULL;
-
-    return pess;
-}
-
-void insereInicio(listaDuplamente *l, int i, char *n) {
-    nodep *pess = aloca(i, n);
-
-    if (pess == NULL) {
-        return;
-    }
-
-    if (l->inicio == NULL) {
-        l->inicio = pess;
-        l->fim = pess;
-    } else {
-        pess->prox = l->inicio;
-        l->inicio = pess;
-    }
-    
-    l->tamanholista++;
-}
-
-void imprimeLista(listaDuplamente *l) {
-    nodep *aux= l->inicio;
-    while (aux != NULL) {
-        printf("idade: %d, nome: %s\n", aux->idade, aux->nome);
-        aux = aux->prox;
-    }
-}
-
-int busca(listaDuplamente *l, int v){
-    nodep *aux = l->inicio;
-
-    while(aux != NULL){
-        if(aux->idade == v){
-            printf("encontrado...\n");
-            return aux;
-        }
-        aux = aux->prox;
-    }
     return 0;
 }
+//2
 
-void removevalor(listaDuplamente *l, int v) {
-    nodep *aux = l->inicio;
+void insereInicio(NodeP **l, int idade, char nome[15]){
+    NodeP *aux = (NodeP *)malloc(sizeof(NodeP));
+    if (aux == NULL) {
+        return;
+    }
+    aux->pess = (Pessoa *)malloc(sizeof(Pessoa));
+    if (aux->pess == NULL) {
+        free(aux);
+        return;
+    }
+    strcpy(aux->pess->nome, nome);
+    aux->pess->idade = idade;
+    aux->ant = NULL;
+    aux->prox = *l;
+
+    if (*l != NULL) {
+        (*l)->ant = aux;
+    }
+    *l = aux;
+}
+
+//3
+NodeP* busca(NodeP *l, int idade){
+    NodeP *aux = l;
+    NodeP *existe = NULL;
+
+    while(l->prox !=aux){
+        if(l->pess->idade == idade){
+            existe = l;
+            printf("\nencontrado...\n");
+            break;
+        }
+        l = l->prox;
+    }
+    return existe;
+}
+
+//4
+
+void removevalor(NodeP **l, int v){
+    NodeP *aux = *l;
 
     while (aux != NULL) {
-        if (aux->idade == v) {
-            if (aux->ant != NULL)
+        if (aux->pess->idade == v){
+            if (aux->ant)
                 aux->ant->prox = aux->prox;
-            else {
-                l->inicio = aux->prox;
-            }
-            if (aux->prox != NULL)
+            else
+                *l = aux->prox;
+
+            if (aux->prox)
                 aux->prox->ant = aux->ant;
-            else {
-                l->fim = aux->ant;
-            }
+
             free(aux);
-            break;
+            return;
         }
         aux = aux->prox;
     }
 }
 
-void inverte(listaDuplamente *l){
-    nodep *aux = NULL;
-    nodep *atual = l->inicio;
-
-    while (atual != NULL) {
-        aux = atual->ant;
-        atual->ant = atual->prox;
-        atual->prox = aux;
-
-        atual = atual->ant;
+//5
+void invertelista(NodeP *l, NodeP **new){
+    NodeP *aux = l;
+    *new = NULL;
+    while (aux != NULL) {
+        insereInicio(new, aux->pess->idade, aux->pess->nome);
+        aux = aux->prox;
     }
-    aux = l->inicio;
-    l->inicio = l->fim;
-    l->fim = aux;
+}
+
+//para teste
+void mostralista(NodeP *l){
+    NodeP *aux = l;
+    while(aux != NULL){
+        printf("%d, %s\n", aux->pess->idade, aux->pess->nome);
+        aux = aux->prox;
+    }
 }

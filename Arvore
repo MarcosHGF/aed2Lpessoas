@@ -1,1 +1,82 @@
+#include<stdio.h>
+#include<stdlib.h>
 
+typedef struct arvore{
+    int dado;
+    struct arvore *dir;
+    struct arvore *esq;
+}Arvore;
+
+void insere(Arvore *t, int n);
+void percorreOrdem(Arvore *t);
+int tamanho(Arvore *t);
+int contafolha(Arvore *t)
+
+int main(){
+
+
+
+
+
+
+
+    return 0;
+}
+
+void insere(Arvore *t, int n){
+    if (t == NULL)
+    {
+        t = (Arvore*) malloc(sizeof(Arvore));
+        if (t != NULL)
+        {
+            t->esq = NULL;
+            t->dir = NULL;
+            t->dado = n;
+        }
+        else
+            printf("Memoria insuficiente");
+    }
+    else
+        if (t->dado < 0)
+            insere(t->esq, n);
+        else
+            if (t->dado > 0)
+                insere(t->dir, n);
+            else
+                printf("Duplica��o de no");
+}
+
+void percorreOrdem(Arvore *t) {
+    if (t != NULL) {
+        percorreOrdem(t->esq);
+        printf("%d ", t->dado);
+        percorreOrdem(t->dir);
+    }
+}
+
+int tamanho(Arvore *t){
+    if(t == NULL)
+        return 0;
+
+    int tamesq = tamanho(t->esq);
+    int tamdir = tamanho(t->dir);
+
+    return tamdir + tamesq + 1;
+    
+}
+
+int contafolha(Arvore *t){
+    if (t == NULL) {
+        return 0;
+    }
+    
+    if (t->esq == NULL && t->dir == NULL) {
+        return 1;
+    }
+
+    int leftLeaves = countLeaves(t->esq);
+    int rightLeaves = countLeaves(t->dir);
+
+    return leftLeaves + rightLeaves;
+
+}

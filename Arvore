@@ -1,85 +1,86 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-typedef struct arvore{
-    int dado;
-    struct arvore *dir;
-    struct arvore *esq;
-}Arvore;
+typedef struct no{
+    int d;  
+    struct no *esq, *dir; 
+}arvore;
 
-void insere(Arvore *t, int n);
-void percorreOrdem(Arvore *t);
-int tamanho(Arvore *t);
-int contafolha(Arvore *t);
+
+arvore* criano(int d);
+arvore* insere(arvore *t, int d);
+void imprimeOrdem(arvore *t);
+int altura(arvore* t);
+int contafolha(arvore *t);
+
 
 int main(){
-    int tam, folhas;
-    Arvore *tree;
+    arvore *t = NULL;
+    int tam, f;
 
-    insere(tree, 9);
-    insere(tree, 2);
-    insere(tree, 18);
+    t = insere(t, 10);
+    t = insere(t, 2);
+    t = insere(t, 15);
+    t = insere(t, 7);
+
+    imprimeOrdem(t);
+    tam = altura(t);
+    f = contafolha(t);
+
+    printf("\n%d (altura), %d (folhas)\n", tam, f);
+
+return 0;
+}
+
+arvore* criano(int d){
+    arvore *aux = (arvore*)malloc(sizeof(arvore));
+    aux->d = d;
+    aux->esq = NULL;
+    aux->dir = NULL;
+    return aux;
+}
+
+arvore* insere(arvore *t, int d) {
+    if (t == NULL) 
+        return criano(d);
     
+    if (d < t->d) 
+        t->esq = insere(t->esq, d);
 
-    percorreOrdem(tree);
-    tam = tamanho(tree);
-    printf("%d\n", tam);
-    folhas = contafolha(tree);
-    printf("%d\n", folhas);
-
-    return 0;
+    else if (d > t->d) 
+        t->dir = insere(t->dir, d);
+    
+    return t;
 }
 
-void insere(Arvore *t, int n){
-    if (t == NULL)
-    {
-        t = (Arvore*) malloc(sizeof(Arvore));
-        if (t != NULL)
-        {
-            t->esq = NULL;
-            t->dir = NULL;
-            t->dado = n;
-        }
-        else
-            printf("Memoria insuficiente");
-    }
-    else
-        if (t->dado < 0)
-            insere(t->esq, n);
-        else
-            if (t->dado > 0)
-                insere(t->dir, n);
-            else
-                printf("Duplica��o de no");
-}
-
-void percorreOrdem(Arvore *t) {
+void imprimeOrdem(arvore *t) {
     if (t != NULL) {
-        percorreOrdem(t->esq);
-        printf("%d ", t->dado);
-        percorreOrdem(t->dir);
+        imprimeOrdem(t->esq);
+        printf("%d ", t->d);
+        imprimeOrdem(t->dir);
     }
 }
 
-int tamanho(Arvore *t){
+int altura(arvore* t) {
+    if (t == NULL)
+        return 0;
+    else{
+        int hesq = altura(t->esq);
+        int hdir = altura(t->dir);
+    
+        if  (hesq > hdir)
+            return hesq + 1;
+        else
+            return hdir + 1;
+    }
+}
+
+int contafolha(arvore *t){
     if(t == NULL)
         return 0;
 
-    int tamesq = tamanho(t->esq);
-    int tamdir = tamanho(t->dir);
-
-    return tamdir + tamesq + 1;
-    
-}
-
-int contafolha(Arvore *t){
-    if (t == NULL) {
-        return 0;
-    }
-    
-    if (t->esq == NULL && t->dir == NULL) {
+    if(t->esq == NULL && t->dir == NULL)
         return 1;
-    }
 
     int folhaesq = contafolha(t->esq);
     int folhadir = contafolha(t->dir);

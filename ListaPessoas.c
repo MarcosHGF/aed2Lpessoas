@@ -4,15 +4,16 @@
 
 typedef struct nodePessoa {
     int idade;
-    char nome[30];
+    char nome[15];
     struct nodePessoa *ant;
     struct nodePessoa *prox;
 } nodep;
 
-typedef struct {
+typedef struct no{
     struct nodep *inicio;
     struct nodep *fim;
     int tamanholista;
+    int i;
 } listaDuplamente;
 
 void crialista(listaDuplamente *l);
@@ -33,7 +34,7 @@ int main() {
         printf("idade: ");
         scanf("%d", &d);
         printf("nome: ");
-        scanf("%s", n);
+        gets(n);
 
         insereInicio(&lista, d, n);
     }
@@ -44,6 +45,8 @@ int main() {
     //removevalor(&lista, 5);
     printf("invertida\n");
     imprimeLista(&lista);
+
+return 0;
 }
 
 void crialista(listaDuplamente *l) {
@@ -86,11 +89,10 @@ void insereInicio(listaDuplamente *l, int i, char *n) {
 }
 
 void imprimeLista(listaDuplamente *l) {
-    nodep *atual;
-    atual = l->inicio
-    while (atual != NULL) {
-        printf("idade: %d, nome: %s\n", atual->idade, atual->nome);
-        atual = atual->prox;
+    nodep *aux= l->inicio;
+    while (aux != NULL) {
+        printf("idade: %d, nome: %s\n", aux->idade, aux->nome);
+        aux = aux->prox;
     }
 }
 
@@ -144,6 +146,3 @@ void inverte(listaDuplamente *l){
     l->inicio = l->fim;
     l->fim = aux;
 }
-
-
-

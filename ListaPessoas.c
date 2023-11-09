@@ -131,3 +131,19 @@ void mostralista(NodeP *l){
         aux = aux->prox;
     }
 }
+//insere inicio lista dupla nao circular
+if (d < q->inicio->dado) {
+    aux->dado = d;
+    aux->prox = q->inicio;
+    aux->ant = NULL;  // Não há nó anterior ao novo nó no início
+    q->inicio->ant = aux;  // O nó anterior ao atual início aponta para o novo nó
+    q->inicio = aux;  // Atualiza o início para o novo nó
+    return 1;
+}
+if(d > q->fim->dado){
+    aux->dado=d;
+    aux->ant=q->fim;    
+    aux->prox = NULL;
+    q->fim->prox= aux;
+    q->fim = aux;
+}
